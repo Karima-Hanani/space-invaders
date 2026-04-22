@@ -29,6 +29,8 @@ span {
 
 #gameCanvas {
     background-color: rgb(69, 5, 112);
+    width: 500px;
+    height: 480px;
     display: block;
     border: 2px solid rgb(109, 0, 182);
     border-radius: 8px;
