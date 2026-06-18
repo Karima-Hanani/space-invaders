@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="player-ship" viewBox="0 0 324 276">
+    <g id="Frame">
+      <!-- all your paths here -->
+    </g>
+  </symbol>
+</svg>
+
+<svg id="player" viewBox="0 0 324 276">
+  <use href="player.svg#player-ship"></use>
+</svg>
+

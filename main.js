@@ -1,81 +1,74 @@
 const gameCanvas = document.getElementById('gameCanvas');
+const player = document.getElementById('player');
+window.addEventListener('resize',()=>{
+    
+})
+// const canvasRect = gameCanvas.getBoundingClientRect();
+// const playerRect = player.getBoundingClientRect();
+// console.log(canvasRect.x);
+// console.log(playerRect.x);
+// console.log("X: ",playerRect.x-canvasRect.x);
+
 //Game Info
 const score = document.getElementById('score');
 const level = document.getElementById('level');
 const lives = document.getElementById('lives');
 const highScore = document.getElementById('high-score');
-//Controls
-const startBtn = document.getElementById('startBtn');
-const pauseBtn = document.getElementById('pauseBtn');
 
-function createSprite(x,y,w,h,color) {
-    const el= document.createElement('div');
+//btn
+// const continueBtn= document.getElementById('continue');
+// const restartBtn=  document.getElementById('restart');
 
-    el.style.position = 'absolute';
-    
-    el.style.width = w +'px';
-    el.style.position = h + 'px';
-    
-    el.style.backgroundColor = color;
+//Satatus:
 
-    gameCanvas.appendChild(el);
-
-    return {
-        x,
-        y,
-        el
-    };
+const Player = {
+    x:0,
+    y: 0,
+    speed: 5,
 }
 
+let maxX = 0;
+function updateMovementLimits() {
+    const canvasRect = gameCanvas.getBoundingClientRect();
+    const playerRect = player.getBoundingClientRect();
 
-function render(entity) {
-    entity.el.style.transform =
-        `translate(${entity.x}px,
-        ${entity.y}px)`;
-    
+    maxX = (canvasRect.width - playerRect.width) / 2;
 }
 
-const player =
-    createSprite(
-        100,
-        200,
-        50,
-        50,
-        "yellow"
-    );
+function movePlayer() {
 
-//Game loop
-let lastTime = 0;
-let paused = false;
-
-function gameLoop(time) {
-    const delta = (time - lastTime) / 1000;
-
-    lastTime = time;
-
-    if (paused) {
-        requestAnimationFrame(
-            gameLoop
-        );
-
-        return;
+    if (keys.ArrowLeft) {
+        Player.x -= Player.speed;
     }
 
-    update(delta);
+    if (keys.ArrowRight) {
+        Player.x += Player.speed;
+    }
 
-    render(player);
-
-    requestAnimationFrame(
-        gameLoop
-    );
+    Player.x = Math.max(-maxX, Math.min(Player.x, maxX))
+    
+    player.style.transform = `translateX(calc(-50% + ${Player.x}px))`;
 }
 
-requestAnimationFrame(
-    gameLoop
-);
+
+function gameLoop() {
+    movePlayer();
+    requestAnimationFrame(gameLoop)
+}
+requestAnimationFrame(gameLoop)
+
+
+
+
+
+
+//resize fix:
+window.addEventListener('resize', updateMovementLimits);
+updateMovementLimits();
+
+
 
 //manipulate input
-
 const keys = {};
 window.addEventListener(
     'keydown',
@@ -88,9 +81,15 @@ window.addEventListener(
 );
 
 
-//
-pauseBtn.addEventListener(
-    'click',
-    () => paused = !paused
-);
+//add pause btn && restart btn
+// continueBtn.addEventListener(
+//     'click',
+//     () => paused = !paused
+// );
 
+// restartBtn.addEventListener(
+//     'click',
+//     () => {
+//         window.location.reload();
+//     }
+// );
