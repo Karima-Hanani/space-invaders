@@ -42,6 +42,7 @@ span {
 }
 
 #gameCanvas {
+    position: relative;
     background-color:var(--primary-color);
     width: 40vw;
     min-width: 500px;
@@ -51,6 +52,11 @@ span {
     border: .5px solid rgb(238, 228, 138);
     box-shadow: var(--accent-color) 0px 0px 20px, var(--shadow-color) 0px 0px 40px;
     border-radius: 8px;
+
+}
+
+.enemy {
+    position: absolute;
 
 }
 
