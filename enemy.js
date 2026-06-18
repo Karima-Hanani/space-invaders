@@ -41,3 +41,20 @@ function createEnemy(x,y) {
     }
 
 }
+
+function createEnemies() {
+    const spacing = 60 
+    const totalWidth = (5 * spacing) + 40
+    const startX = (gameWidth - totalWidth) / 2
+
+    for (let i = 0 ; i <= 2 ; i++) {
+        for (let j = 0 ; j <= 5;j++) {
+            const x = startX + (spacing * j)
+            const y = 30 + i * 50
+            const enemy = createEnemy(x,y)
+            enemies.push(enemy)
+        }
+    }
+}
+
+createEnemies()
