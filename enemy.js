@@ -3,7 +3,9 @@ const gameHeight = gameCanvas.clientHeight
 const gameWidth = gameCanvas.clientWidth
 const enemy = {};
 const enemies = [];
-
+let direction = 1;
+let speed = 1;
+let dropStep = 20;
 
 function createEnemy(x,y) {
     const enemyEl = document.createElement('div');
@@ -50,11 +52,39 @@ function createEnemies() {
     for (let i = 0 ; i <= 2 ; i++) {
         for (let j = 0 ; j <= 5;j++) {
             const x = startX + (spacing * j)
-            const y = 30 + i * 50
+            const y = 30 + i * 40
             const enemy = createEnemy(x,y)
             enemies.push(enemy)
         }
     }
 }
 
+function moveEnemies() {
+    
+    for (const enemy of enemies) {
+        if (!enemy.alive) continue;
+        
+        enemy.x += speed*direction
+        enemy.element.style.transform = `translate(${enemy.x}px,${enemy.y}px)`
+    }
+
+    let minX = enemies[0].x;
+    let maxX = enemies[5].x;
+    
+    if (minX <= 0|| maxX > gameWidth - 40) {
+        direction *= -1
+        
+        for (const enemy of enemies) {
+            enemy.y += dropStep
+            enemy.element.style.transform = `translate(${enemy.x}px,${enemy.y}px)`
+        }
+    }
+}
+
 createEnemies()
+ function gameLoop() {
+    moveEnemies()
+    requestAnimationFrame(gameLoop)
+ }
+
+gameLoop()
