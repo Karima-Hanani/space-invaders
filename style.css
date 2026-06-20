@@ -113,8 +113,8 @@ span {
 
 .bullet {
     position: absolute;
-    width: 10px;
-    height: 31px;
+    width: 8px;
+    height: 20px;
     pointer-events: none;
 }
 
