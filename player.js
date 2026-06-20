@@ -22,20 +22,13 @@ const lives = document.getElementById('lives');
 const Player = {
     x:0,
     y: 0,
-    width: 90,
-    height:0,
     speed: 5,
 }
-
-const bullets = [];
-const bulletSpeed = 8;
 
 let maxX = 0;
 function updateMovementLimits() {
     const canvasRect = gameCanvas.getBoundingClientRect();
     const playerRect = player.getBoundingClientRect();
-    Player.width = playerRect.width;
-    Player.height = playerRect.height;
 
     maxX = (canvasRect.width - playerRect.width) / 2;
 }
@@ -55,44 +48,14 @@ function movePlayer() {
     player.style.transform = `translateX(calc(-50% + ${Player.x}px))`;
 }
 
+
 function fireBullet() {
-//     const canvasRect = gameCanvas.getBoundingClientRect();
-//     const playerRect = player.getBoundingClientRect();
-    const bullet = document.createElement('img');
-
-    bullet.src = 'bullet.svg';
-    bullet.alt = '';
-//     bullet.className = 'bullet';
-
-//     const bulletWidth = 10;
-//     const bulletHeight = 31;
-//     const x = playerRect.left - canvasRect.left + (playerRect.width / 2) - (bulletWidth / 2);
-//     const y = playerRect.top - canvasRect.top - bulletHeight + 10;
-
-//     bullet.style.left = `${x}px`;
-//     bullet.style.top = `${y}px`;
-
-//     gameCanvas.appendChild(bullet);
-//     bullets.push({ element: bullet, y });
+    
 }
 
-// function moveBullets() {
-//     for (let i = bullets.length - 1; i >= 0; i--) {
-//         const bullet = bullets[i];
-
-//         bullet.y -= bulletSpeed;
-//         bullet.element.style.top = `${bullet.y}px`;
-
-//         if (bullet.y < -40) {
-//             bullet.element.remove();
-//             bullets.splice(i, 1);
-//         }
-//     }
-// }
 
 function gameLoop() {
     movePlayer();
-    // moveBullets();
     requestAnimationFrame(gameLoop)
 }
 requestAnimationFrame(gameLoop)
@@ -112,14 +75,7 @@ updateMovementLimits();
 const keys = {};
 window.addEventListener(
     'keydown',
-    e => {
-        keys[e.code] = true;
-
-        if (e.code === 'Space' && !e.repeat) {
-            e.preventDefault();
-            fireBullet();
-        }
-    }
+    e => keys[e.code] = true
 );
 
 window.addEventListener(
@@ -140,4 +96,3 @@ window.addEventListener(
 //         window.location.reload();
 //     }
 // );
-
