@@ -1,6 +1,4 @@
 const gameCanvas = document.getElementById('gameCanvas');
-const gameHeight = gameCanvas.clientHeight
-const gameWidth = gameCanvas.clientWidth
 
 const enemy = {
         width: 35,
@@ -12,6 +10,13 @@ const enemies = [];
 let direction = 1;
 let speed = 1;
 let dropStep = 20;
+
+function getGameSize() {
+    return {
+        height: gameCanvas.clientHeight,
+        width: gameCanvas.clientWidth
+    }
+}
 
 function createEnemy(x,y) {
     const enemyEl = document.createElement('div');
