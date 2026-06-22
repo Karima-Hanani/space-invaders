@@ -68,6 +68,24 @@ function createEnemies() {
 };
 
 
+function getEnemyLimits() {
+    let minX = Infinity;
+    let maxX = -Infinity;
+    
+    for (const e of enemies) {
+        if (!e.alive) continue
+        if (e.x < minX) {
+            minX = e.x
+        } 
+        if (e.x > maxX) {
+            maxX = e.x
+        }   
+    }
+
+    return{minX,maxX}
+}
+
+
 function moveEnemies() {
     const gameSize = getGameSize();
 
@@ -78,9 +96,7 @@ function moveEnemies() {
         e.element.style.transform = `translate(${e.x}px,${e.y}px)`
     }
 
-    
-    let minX = enemies[0].x;
-    let maxX = enemies[5].x;
+    let limits = getEnemyLimits();
     
     if (limits.minX <= 0|| limits.maxX > gameSize.width - enemy.width) {
         direction *= -1
@@ -94,6 +110,7 @@ function moveEnemies() {
 }
 
 createEnemies()
+
  function gameLoop() {
     moveEnemies()
     requestAnimationFrame(gameLoop)
