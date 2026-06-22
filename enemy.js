@@ -3,13 +3,15 @@ const gameCanvas = document.getElementById('gameCanvas');
 const enemy = {
         width: 35,
         height: 40,
-        };
-
+};
 const enemies = [];
 
+const enemyBullets = [];
+const bulletSpeed = 8;
+
 let direction = 1;
-let speed = 1;
-let dropStep = 20;
+const speed = 1;
+const dropStep = 20;
 
 function getGameSize() {
     return {
@@ -107,6 +109,26 @@ function moveEnemies() {
             e.element.style.transform = `translate(${e.x}px,${e.y}px)`
         }
     }
+}
+
+function enemiesBullets() {
+    let aliveEnemies = enemies.filter((e) => e.alive);
+    let index = Math.ceil(Math.random() * (aliveEnemies.length -1))
+    let shooter = aliveEnemies[index]
+
+    let bulletX = shooter.x + enemy.width / 2
+    let bolletY = shooter.y + enemy.height 
+
+    const bullet = document.createElement('img');
+    
+    bullet.src = 'source/bullet_down.svg';
+    bullet.alt = '';
+    bullet.className = 'enemy-bullet';
+
+    bullet.style.transform = `translate(${bulletX}px,${bulletY}px)`
+
+    gameCanvas.append(bullet)
+    enemyBullets.push({element: bullet,x:bulletX, y:bulletY})
 }
 
 createEnemies()
