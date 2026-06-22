@@ -47,38 +47,43 @@ function createEnemy(x,y) {
 }
 
 function createEnemies() {
-    console.log(gameHeight,gameWidth)
-    const spacing = 60 
-    const totalWidth = (5 * spacing) + 40
-    const startX = (gameWidth - totalWidth) / 2
+    const gameSize = getGameSize();
+    const spacing = 60;
+    const totalWidth = (5 * spacing) + enemy.width;
+    const startX = (gameSize.width - totalWidth) / 2;
 
     for (let i = 0 ; i <= 2 ; i++) {
         for (let j = 0 ; j <= 5;j++) {
             const x = startX + (spacing * j)
             const y = 30 + i * 50
-            const enemy = createEnemy(x,y)
-            enemies.push(enemy)
-        }
-    }
-}
+            const newEnemy = createEnemy(x,y)
+            enemies.push(newEnemy)
+        };
+    };
+};
+
 
 function moveEnemies() {
-    for (const enemy of enemies) {
-        if (!enemy.alive) continue;
+    const gameSize = getGameSize();
+
+    for (const e of enemies) {
+        if (!e.alive) continue;
         
-        enemy.x += speed*direction
-        enemy.element.style.transform = `translate(${enemy.x}px,${enemy.y}px)`
+        e.x += speed*direction
+        e.element.style.transform = `translate(${e.x}px,${e.y}px)`
     }
 
+    
     let minX = enemies[0].x;
     let maxX = enemies[5].x;
     
-    if (minX <= 0|| maxX > gameWidth - 40) {
+    if (limits.minX <= 0|| limits.maxX > gameSize.width - enemy.width) {
         direction *= -1
         
-        for (const enemy of enemies) {
-            enemy.y += dropStep
-            enemy.element.style.transform = `translate(${enemy.x}px,${enemy.y}px)`
+        for (const e of enemies) {
+            if (!e.alive) continue; 
+            e.y += dropStep
+            e.element.style.transform = `translate(${e.x}px,${e.y}px)`
         }
     }
 }
