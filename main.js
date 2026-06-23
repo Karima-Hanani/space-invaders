@@ -41,6 +41,7 @@ function updateMovementLimits() {
     const playerRect = playerEl.getBoundingClientRect();
     Player.width = playerRect.width;
     Player.height = playerRect.height;
+    Player.y = playerRect.y;
 
     maxX = (canvasRect.width - playerRect.width) / 2;
 }
