@@ -203,8 +203,21 @@ function throttle(fn,wait) {
     }
 }
 
+// show the controls and blur the canvas
 function toggleControl() {
     controlEl.classList.toggle('hidden');
     gameCanvas.classList.toggle('blurred');
     gameInfo.classList.toggle('blurred');
+}
+
+
+//Check for collision
+function isColliding(bullet,target) {
+    
+    return (
+        bullet.x < target.x + target.width &&
+        bullet.x + bullet.width > target.x &&
+        bullet.y < target.y + target.height &&
+        bullet.y + bullet.height > target.y
+    );
 }
