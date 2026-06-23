@@ -1,18 +1,25 @@
 const gameCanvas = document.getElementById('gameCanvas');
-const player = document.getElementById('player');
+const playerEl = document.getElementById('player');
 
 
 //Game Info
-const score = document.getElementById('score');
-const level = document.getElementById('level');
-const lives = document.getElementById('lives');
-// const highScore = document.getElementById('high-score');
+const scoreEl = document.getElementById('score');
+const timeEl = document.getElementById('time');
+const livesEl = document.getElementById('lives');
 
 //btn
 // const continueBtn= document.getElementById('continue');
 // const restartBtn=  document.getElementById('restart');
 
+
+
 //Satatus:
+const gameState = {
+    score: 0,
+    time: 0.0,
+    lives: 3,
+    paused:false,
+}
 
 const Player = {
     x:0,
@@ -28,7 +35,7 @@ const bulletSpeed = 8;
 let maxX = 0;
 function updateMovementLimits() {
     const canvasRect = gameCanvas.getBoundingClientRect();
-    const playerRect = player.getBoundingClientRect();
+    const playerRect = playerEl.getBoundingClientRect();
     Player.width = playerRect.width;
     Player.height = playerRect.height;
 
