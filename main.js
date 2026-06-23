@@ -183,3 +183,17 @@ window.addEventListener(
 //     }
 // );
 
+
+function throttle(fn,wait) {
+    let shouldWait = false
+    
+    return function () {
+        if (!shouldWait) {
+            fn()
+            shouldWait = true
+            setTimeout(() => {
+                shouldWait=false
+            },wait)
+        }
+    }
+}
