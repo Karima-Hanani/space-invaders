@@ -54,60 +54,81 @@ function movePlayer() {
 
     Player.x = Math.max(-maxX, Math.min(Player.x, maxX))
     
-    player.style.transform = `translateX(calc(-50% + ${Player.x}px))`;
-// console.log(Player);
+    playerEl.style.transform = `translateX(calc(-50% + ${Player.x}px))`;
 
 }
 
-function fireBullet() {
+const shootBullet = throttle(() => {
     const canvasRect = gameCanvas.getBoundingClientRect();
-    const playerRect = player.getBoundingClientRect();
+    const playerRect = playerEl.getBoundingClientRect();
+
+    const bullet = document.createElement('img');
+            
     
+    bullet.src = 'source/bullet_up.svg';
+    bullet.alt = '';
+    bullet.className = 'bullet';
+        
+    const bulletWidth = 8;
+    const bulletHeight = 20;
+    const x = playerRect.left - canvasRect.left + (playerRect.width / 2) - (bulletWidth);
+    const y = playerRect.top - canvasRect.top - bulletHeight;
+            
+    bullet.style.left = `${x}px`;
+    bullet.style.top = `${y}px`;
+        
+    gameCanvas.appendChild(bullet);
+    bullets.push({ element: bullet, y });
+}, 300);
+
+function fireBullet() {
+    let count = 0;
     if (keys.Space) {
         //TO-DO: throttle bullet firing
-        
-        const bullet = document.createElement('img');
-    
-        bullet.src = 'source/bullet_up.svg';
-        bullet.alt = '';
-        bullet.className = 'bullet';
-    
-        const bulletWidth = 8;
-        const bulletHeight = 20;
-        const x = playerRect.left - canvasRect.left + (playerRect.width / 2) - (bulletWidth / 2);
-        const y = playerRect.top - canvasRect.top - bulletHeight + 10;
-    
-        bullet.style.left = `${x}px`;
-        bullet.style.top = `${y}px`;
-    
-        gameCanvas.appendChild(bullet);
-        bullets.push({ element: bullet, y });
+        shootBullet();
     }
     moveBullets();
 }
 
 function moveBullets() {
+    const canvasRect = gameCanvas.getBoundingClientRect();
     for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i];
 
         bullet.y -= bulletSpeed;
-        bullet.element.style.top = `${bullet.y}px`;
+        bullet.element.style.top = `${bullet.y}px`;        
 
-        if (bullet.y < -40) {
+        if (bullet.y < 0) {
             bullet.element.remove();
             bullets.splice(i, 1);
         }
     }
 }
 
-function gameLoop() {
-    movePlayer();
-    fireBullet();
-    // moveBullets();
+let lastTime = 0;
+function gameLoop(timestamp) {
+    
+    const dt = timestamp - lastTime;
+    lastTime = timestamp;
+    
+    if (!gameState.paused) {
+        gameState.time += dt / 1000;
+
+        fireBullet();
+        movePlayer();
+    }
+
+    const minutes = 
+        Math.floor(gameState.time / 60)
+    const seconds = 
+        Math.floor(gameState.time % 60)
+
+    timeEl.textContent =
+        `${String(minutes)}.${String(seconds).padStart(2,"0")}`;
+    
     requestAnimationFrame(gameLoop)
 }
 requestAnimationFrame(gameLoop)
-
 
 
 
