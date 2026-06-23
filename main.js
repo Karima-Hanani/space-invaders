@@ -146,11 +146,20 @@ window.addEventListener(
     'keydown',
     e => {
         keys[e.code] = true;
-
-        // if (e.code === 'Space') {
-        //     e.preventDefault();
-        //     fireBullet();
-        // }
+        //Pause the game
+        if (e.key.toLocaleLowerCase() === 'p') {
+            gameState.paused = !gameState.paused;
+            //check status
+            console.log(gameState.paused?"Paused":"Resumed");
+        }
+        //Restart
+        if (e.key.toLocaleLowerCase() === 'r') {
+            // gameState.paused = false;
+            // gameState.time = 0;
+            // gameState.lives = 3;
+            // gameState.score = 0;
+            window.location.reload();
+        }
     }
 );
 
@@ -158,6 +167,7 @@ window.addEventListener(
     'keyup',
     e => keys[e.code] = false
 );
+
 
 
 //add pause btn && restart btn
