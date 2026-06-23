@@ -119,15 +119,15 @@ function gameLoop(timestamp) {
 
         fireBullet();
         movePlayer();
+        const minutes = 
+            Math.floor(gameState.time / 60)
+        const seconds = 
+            Math.floor(gameState.time % 60)
+    
+        timeEl.textContent =
+            `${String(minutes)}.${String(seconds).padStart(2,"0")}`;
     }
 
-    const minutes = 
-        Math.floor(gameState.time / 60)
-    const seconds = 
-        Math.floor(gameState.time % 60)
-
-    timeEl.textContent =
-        `${String(minutes)}.${String(seconds).padStart(2,"0")}`;
     
     requestAnimationFrame(gameLoop)
 }
@@ -152,6 +152,7 @@ window.addEventListener(
         //Pause the game
         if (e.key.toLocaleLowerCase() === 'p') {
             gameState.paused = !gameState.paused;
+            toggleControl();
             //check status
             console.log(gameState.paused?"Paused":"Resumed");
         }
@@ -199,4 +200,10 @@ function throttle(fn,wait) {
             },wait)
         }
     }
+}
+
+function toggleControl() {
+    controlEl.classList.toggle('hidden');
+    gameCanvas.classList.toggle('blurred');
+    gameInfo.classList.toggle('blurred');
 }

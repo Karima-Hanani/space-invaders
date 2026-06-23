@@ -24,9 +24,10 @@ body {
     min-height: 100vh;
     font-family: monospace;
     overflow: hidden;
+    
 }
 
-.game-info {
+#game-info {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1.5rem;
@@ -56,12 +57,14 @@ span {
     position: relative;
     /* isolation: isolate; */
     /* overflow: hidden; */
+    /* filter: blur(5px); */
+
 
 }
 #gameCanvas::before {
     content: "";
     position: absolute;
-    inset: -250px;
+    inset: 20px; /*-250px to be visible outside the canvas */
     z-index: -1;
     background:
         radial-gradient(
@@ -78,6 +81,8 @@ span {
 
     will-change: transform, opacity;
 }
+
+
 
 @keyframes pulse {
 
@@ -132,10 +137,26 @@ span {
 }
 
 .controls {
+    position: absolute;
     display: flex;
-    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-width: 400px;
+    min-height: 200px;
     gap: 15px;
+    background-color: var(--accent-color);
+    border-radius: 8px;
+    opacity: .8;
 
+}
+
+.hidden {
+    display: none;
+}
+.blurred{
+    filter: blur(4px);
+    /* pointer-events: none; */
 }
 
 button {
@@ -146,6 +167,7 @@ button {
     padding: 6px 16px;
     border: .5px solid var(--secondary-color);
     border-radius: 8px;
+    align-self: flex-end;
 }
 
 button:hover {
