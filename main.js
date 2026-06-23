@@ -3,13 +3,16 @@ const playerEl = document.getElementById('player');
 
 
 //Game Info
+const gameInfo= document.getElementById('game-info')
 const scoreEl = document.getElementById('score');
 const timeEl = document.getElementById('time');
 const livesEl = document.getElementById('lives');
 
-//btn
-// const continueBtn= document.getElementById('continue');
-// const restartBtn=  document.getElementById('restart');
+//Controls
+const controlEl = document.querySelector(".controls")
+const backGround = document.querySelector('body')
+const pauseBtn= document.getElementById('pauseBtn');
+const restartBtn=  document.getElementById('restartBtn');
 
 
 
