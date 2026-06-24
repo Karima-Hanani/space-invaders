@@ -86,7 +86,7 @@ const shootBullet = throttle(() => {
 }, 300);
 
 function fireBullet() {
-    let count = 0;
+    // let count = 0;
     if (keys.Space) {
         //TO-DO: throttle bullet firing
         shootBullet();
@@ -153,17 +153,14 @@ window.addEventListener(
         //Pause the game
         if (e.key.toLocaleLowerCase() === 'p') {
             gameState.paused = !gameState.paused;
-            toggleControl();
+            toggleControl('paused');
             //check status
             console.log(gameState.paused?"Paused":"Resumed");
         }
         //Restart
         if (e.key.toLocaleLowerCase() === 'r') {
-            // gameState.paused = false;
-            // gameState.time = 0;
-            // gameState.lives = 3;
-            // gameState.score = 0;
-            window.location.reload();
+            restart();
+            hideControl();
         }
     }
 );
@@ -176,17 +173,22 @@ window.addEventListener(
 
 
 //add pause btn && restart btn
-// continueBtn.addEventListener(
-//     'click',
-//     () => paused = !paused
-// );
+resumeBtn.addEventListener(
+    'click',
+    () => {
+        gameState.paused = !gameState.paused
+        toggleControl('paused');
+    }
+);
 
-// restartBtn.addEventListener(
-//     'click',
-//     () => {
-//         window.location.reload();
-//     }
-// );
+restartBtn.addEventListener(
+    'click',
+    () => {
+        // window.location.reload();
+        restart();
+        hideControl();
+    }
+);
 
 
 function throttle(fn,wait) {
@@ -204,12 +206,47 @@ function throttle(fn,wait) {
 }
 
 // show the controls and blur the canvas
-function toggleControl() {
+function toggleControl(state) {
     controlEl.classList.toggle('hidden');
     gameCanvas.classList.toggle('blurred');
     gameInfo.classList.toggle('blurred');
+
+    switch (state) {
+        case 'paused':
+            showMessage("Game Paused ⏸️",state)
+            break;
+        case 'win':
+            showMessage( "Congratulations 🥳 ",state)
+            break;
+        case 'lose':
+            showMessage("Game Over 😵",state)
+            break;
+        
+        default:
+            break;
+    }
+
 }
 
+function hideControl() {
+    controlEl.classList.add('hidden');
+    gameCanvas.className = '';
+    gameInfo.className = '';
+}
+
+
+function showMessage(message,state) {
+    controlEl.innerHTML=``
+    const show = document.createElement('div')
+
+    show.textContent = `${message}`
+    show.className= state
+    controlEl.prepend(show)
+    if (state=='paused') {
+        controlEl.appendChild(resumeBtn)
+    }
+    controlEl.appendChild(restartBtn)
+}
 
 //Check for collision
 function isColliding(bullet,target) {
@@ -220,4 +257,19 @@ function isColliding(bullet,target) {
         bullet.y < target.y + target.height &&
         bullet.y + bullet.height > target.y
     );
+}
+
+function restart() {
+    gameState.paused = false;
+    gameState.time = 0;
+    gameState.lives = 3;
+    gameState.score = 0;
+    playerEl.style.transform = `translateX(-50%)`;
+    Player.x = 0; 
+    //Remove bullets
+    bullets.forEach(b => {
+        b.element.remove();
+    });
+    bullets.length = 0
+    
 }
