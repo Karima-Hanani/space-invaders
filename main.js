@@ -162,6 +162,14 @@ window.addEventListener(
             restart();
             hideControl();
         }
+        //================For testing purposes only=================
+        if (e.key.toLocaleLowerCase() === 'w') {
+            toggleControl('win')
+        }
+        if (e.key.toLocaleLowerCase() === 'l') {
+            toggleControl('lose')
+        }
+        //=======================End of Test=========================
     }
 );
 
@@ -237,13 +245,22 @@ function hideControl() {
 
 function showMessage(message,state) {
     controlEl.innerHTML=``
-    const show = document.createElement('div')
+    const show = document.createElement("span")
+    const status = document.createElement('p')
+    
+    status.innerHTML = `Score: ${gameState.score}<br>
+                        Time: ${String(Math
+                            .floor(gameState.time / 60))}.${String(String(Math
+                                .floor(gameState.time % 60)))
+                                .padStart(2, "0")}`
 
     show.textContent = `${message}`
     show.className= state
     controlEl.prepend(show)
     if (state=='paused') {
         controlEl.appendChild(resumeBtn)
+    } else {
+        controlEl.appendChild(status)
     }
     controlEl.appendChild(restartBtn)
 }
