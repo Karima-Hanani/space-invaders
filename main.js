@@ -8,9 +8,12 @@ const scoreEl = document.getElementById('score');
 const timeEl = document.getElementById('time');
 const livesEl = document.getElementById('lives');
 
+//MSG
+const msgEl= document.getElementById('msg')
+
 //Controls
 const controlEl = document.querySelector(".controls")
-const backGround = document.querySelector('body')
+const backGround = document.querySelector('body')//Needs to be removed (for testing only)
 const resumeBtn= document.getElementById('resumeBtn');
 const restartBtn=  document.getElementById('restartBtn');
 
@@ -218,13 +221,14 @@ function toggleControl(state) {
     controlEl.classList.toggle('hidden');
     gameCanvas.classList.toggle('blurred');
     gameInfo.classList.toggle('blurred');
+    msgEl.classList.toggle('blurred');
 
     switch (state) {
         case 'paused':
             showMessage("Game Paused ⏸️",state)
             break;
         case 'win':
-            showMessage( "Congratulations 🥳 ",state)
+            showMessage("Congratulations 🥳 ",state)
             break;
         case 'lose':
             showMessage("Game Over 😵",state)
