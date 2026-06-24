@@ -11,7 +11,7 @@ const livesEl = document.getElementById('lives');
 //Controls
 const controlEl = document.querySelector(".controls")
 const backGround = document.querySelector('body')
-const pauseBtn= document.getElementById('pauseBtn');
+const resumeBtn= document.getElementById('resumeBtn');
 const restartBtn=  document.getElementById('restartBtn');
 
 
