@@ -44,9 +44,10 @@ function updateMovementLimits() {
     const playerRect = playerEl.getBoundingClientRect();
     Player.width = playerRect.width;
     Player.height = playerRect.height;
-    Player.y = playerRect.y;
+    Player.y = playerRect.y - canvasRect.y;//fixed Y related to canvas
+    // Player.x = (playerRect.x+(playerRect.width/2) - canvasRect.x);
 
-    maxX = (canvasRect.width - playerRect.width) / 2;
+    maxX = (canvasRect.width - playerRect.width)/2;
 }
 
 function movePlayer() {
@@ -190,13 +191,18 @@ window.addEventListener(
             console.log("player Y: ",Player.y);
             console.log("player X: ", Player.x);
 
-    const canvasRect = gameCanvas.getBoundingClientRect();
+            const canvasRect = gameCanvas.getBoundingClientRect();
+            const playerRect = playerEl.getBoundingClientRect();
 
             
-            console.log("width : ",canvasRect.width);
-            console.log("height : ",canvasRect.height);
-            console.log("X : ",canvasRect.x);
-            console.log("Y : ",canvasRect.y);
+            console.log("Canvas width : ",canvasRect.width);
+            console.log("Canvas height : ",canvasRect.height);
+            console.log("canvas X : ",canvasRect.x);
+            console.log("canvas Y : ",canvasRect.y);
+            console.log("Player Rect Y : ",playerRect.y);
+            console.log("player Rect x : ",playerRect.x);
+            console.log("player width : ",playerRect.width);
+            console.log("player height : ",playerRect.height);
 
 
             
