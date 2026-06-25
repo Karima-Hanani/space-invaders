@@ -44,6 +44,7 @@ span {
 }
 
 #gameCanvas {
+    position: relative;
     background-color:var(--primary-color);
     width: 40vw;
     min-width: 500px;
@@ -124,6 +125,11 @@ span {
 }
 
 
+
+.enemy {
+    position: absolute;
+
+}
 
 #msg {
     color: rgb(228, 228, 228);
