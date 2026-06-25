@@ -24,7 +24,8 @@ const gameState = {
     score: 0,
     time: 0.0,
     lives: 3,
-    paused:false,
+    paused: false,
+    ended: false,
 }
 
 const Player = {
@@ -139,19 +140,18 @@ function moveEnemyBullets() {
 
 let lastTime = 0;
 function gameLoop(timestamp) {
-    
     const dt = timestamp - lastTime;
     lastTime = timestamp;
     
     if (!gameState.paused) {
         gameState.time += dt / 1000;
-        moveEnemies()
 
+        moveEnemies()
         enemiesBullets()
-        // moveBullets(enemyBullets,'down')
         moveEnemyBullets()
         fireBullet();
         movePlayer();
+
         const minutes = 
             Math.floor(gameState.time / 60)
         const seconds = 
@@ -161,20 +161,13 @@ function gameLoop(timestamp) {
             `${String(minutes)}.${String(seconds).padStart(2,"0")}`;
     }
 
-    
     requestAnimationFrame(gameLoop)
 }
 requestAnimationFrame(gameLoop)
 
-
-
-
-
 //resize fix:
 window.addEventListener('resize', updateMovementLimits);
 updateMovementLimits();
-
-
 
 //manipulate input
 const keys = {};
@@ -183,23 +176,11 @@ window.addEventListener(
     e => {
         keys[e.code] = true;
         //Pause the game
-        if (e.key.toLocaleLowerCase() === 'p') {
+        if (e.key.toLocaleLowerCase() === 'p' && !gameState.ended) {
             gameState.paused = !gameState.paused;
             toggleControl('paused');
-            console.log("enemies: ",enemies);
-            console.log("player Y: ",Player.y);
-            console.log("player X: ", Player.x);
-
     const canvasRect = gameCanvas.getBoundingClientRect();
-
-            
-            console.log("width : ",canvasRect.width);
-            console.log("height : ",canvasRect.height);
-            console.log("X : ",canvasRect.x);
-            console.log("Y : ",canvasRect.y);
-
-
-            
+         
             //check status
             console.log(gameState.paused?"Paused":"Resumed");
         }
@@ -223,8 +204,6 @@ window.addEventListener(
     'keyup',
     e => keys[e.code] = false
 );
-
-
 
 //add pause btn && restart btn
 resumeBtn.addEventListener(
@@ -271,9 +250,13 @@ function toggleControl(state) {
             showMessage("Game Paused ⏸️",state)
             break;
         case 'win':
+            gameState.ended = true
+            gameState.paused = true 
             showMessage("Congratulations 🥳 ",state)
             break;
         case 'lose':
+            gameState.ended = true
+            gameState.paused = true 
             showMessage("Game Over 😵",state)
             break;
         
@@ -326,6 +309,7 @@ function isColliding(bullet,target) {
 
 function restart() {
     gameState.paused = false;
+    gameState.ended = false;
     gameState.time = 0;
     gameState.lives = 3;
     gameState.score = 0;
@@ -335,8 +319,20 @@ function restart() {
     bullets.forEach(b => {
         b.element.remove();
     });
-    bullets.length = 0
+
+    enemyBullets.forEach(eb => {
+        eb.element.remove()
+    })
     
+    enemies.forEach(e => {
+        e.element.remove()
+    })
+
+    bullets.length = 0
+    enemyBullets.length = 0
+    enemies.length = 0
+
+    createEnemies()
 }
 
 
@@ -434,6 +430,9 @@ function getEnemyLimits() {
 
 
 function moveEnemies() {
+    if (isEnemiesReachedPlayer()) {
+        toggleControl('lose')
+    }
     const gameSize = getGameSize();
 
     for (const e of enemies) {
@@ -456,28 +455,8 @@ function moveEnemies() {
     }
 }
 
-// function enemiesBullets() {
-//     let aliveEnemies = enemies.filter((e) => e.alive);
-//     let index = Math.ceil(Math.random() * (aliveEnemies.length -1))
-//     let shooter = aliveEnemies[index]
-
-//     let bulletX = shooter.x + enemy.width / 2
-//     let bulletY = shooter.y + enemy.height 
-
-//     const bullet = document.createElement('img');
-    
-//     bullet.src = 'source/bullet_down.svg';
-//     bullet.alt = '';
-//     bullet.className = 'enemy-bullet';
-
-//     bullet.style.transform = `translate(${bulletX}px,${bulletY}px)`
-
-//     gameCanvas.append(bullet)
-//     enemyBullets.push({element: bullet,x:bulletX, y:bulletY})
-// }
 
 createEnemies()
-// enemiesBullets()
 
 const enemiesBullets= throttle(()=> {
     let aliveEnemies = enemies.filter((e) => e.alive);
@@ -498,3 +477,18 @@ const enemiesBullets= throttle(()=> {
     gameCanvas.append(bullet)
     enemyBullets.push({ element: bullet, x: bulletX, y: bulletY })
 },2000)
+
+function isEnemiesReachedPlayer() {
+    let enemyY = 0;
+    for (let i = enemies.length -1 ; i >= 0 ; i--) {
+        if (!enemies[i].alive) continue
+        enemyY = enemies[i].y
+        break
+    } 
+    
+    const enemiesBottom = enemyY + enemy.height
+    if (enemiesBottom >= Player.y) {
+        return true 
+    }
+    return false
+}
