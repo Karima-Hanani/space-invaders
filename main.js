@@ -529,6 +529,16 @@ function playerRec() {
     }
 }
 
+function updateLives() {
+    let hearts = "";
+
+    for (let i = 0; i < 3; i++) {
+        hearts += i < gameState.lives ? "♥ " : "♡ ";
+    }
+
+    livesEl.textContent = hearts.trim();
+}
+
 function collision() {
     const newPlayerRec = playerRec()
     enemyBullets.forEach((bullet,i) => {
@@ -536,7 +546,8 @@ function collision() {
             if (isColliding(bullet,newPlayerRec)) {
                 bullet.element.remove()
                 enemyBullets.splice(i,1)
-                    gameState.lives-- 
+                gameState.lives-- 
+                updateLives()
                 if (gameState.lives == 0){
                     toggleControl('lose')
                 }
