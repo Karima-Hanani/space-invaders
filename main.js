@@ -412,7 +412,9 @@ function createEnemy(x,y) {
         x:x,
         y:y,
         element:enemyEl,
-        alive: true
+        alive: true,
+        width: enemy.width,
+        height: enemy.height  
     }
 
 }
@@ -539,6 +541,10 @@ function updateLives() {
     livesEl.textContent = hearts.trim();
 }
 
+function updateScore() {
+    scoreEl.textContent = gameState.score + 20
+}
+
 function collision() {
     const newPlayerRec = playerRec()
     enemyBullets.forEach((bullet,i) => {
@@ -552,5 +558,20 @@ function collision() {
                     toggleControl('lose')
                 }
             }
+    })
+
+    bullets.forEach((bullet,i) => {
+        for (let i = 0 ; i < enemies.length ; i++ ) {
+            let e = enemies[i]
+            if (isColliding(bullet,e)) {
+                e.element.remove()
+                bullet.element.remove()   
+                enemies.splice(i,1)
+                gameState.score+=20
+                if (enemies.length <= 0) {
+                    toggleControl('win')
+                }
+            } 
+        }
     })
 }
