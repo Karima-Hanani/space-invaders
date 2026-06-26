@@ -7,25 +7,27 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div id="game-info">
-            <p>score: <span id="score">0</span></p>
-            <p>time: <span id="time">0.00</span></p>
-            <p>lives: <span id="lives">♥ ♥ ♥</span></p>
-            <!-- <p>high score: <span id="high-score">0</span></p>            -->
-        </div>
-
-        <div id="gameCanvas">
-            <svg id="player" viewBox="0 0 324 276">
-                <use href="player.svg#player-ship"></use>
+        <div id="all">
+            <div id="game-info">
+                <p>score: <span id="score">0</span></p>
+                <p>time: <span id="time">0.00</span></p>
+                <p>lives: <span id="lives">♥ ♥ ♥</span></p>
+                <!-- <p>high score: <span id="high-score">0</span></p>            -->
+            </div>
+            
+            <div id="gameCanvas">
+                <svg id="player" viewBox="0 0 324 276">
+                    <use href="player.svg#player-ship"></use>
             </svg>
         </div>
-
+        
         <div id="msg">press ← → to move and [SPACE] to shoot </div>
-
+        
+    </div>
         <div class="controls hidden">
             <button id="restartBtn">restart [R]</button>
             <button id="resumeBtn">resume [P]</button>
-        </div>
+    </div>
     </body>
     <script src="main.js"></script>  
     <!-- <script src="enemy.js"></script>  -->
