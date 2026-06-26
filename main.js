@@ -16,7 +16,7 @@ const controlEl = document.querySelector(".controls")
 const backGround = document.querySelector('body')//Needs to be removed (for testing only)
 const resumeBtn= document.getElementById('resumeBtn');
 const restartBtn=  document.getElementById('restartBtn');
-
+const all = document.getElementById('all')
 
 
 //Satatus:
@@ -146,7 +146,7 @@ function gameLoop(timestamp) {
     
     if (!gameState.paused) {
         gameState.time += dt / 1000;
-
+        collision()
         moveEnemies()
         enemiesBullets()
         moveEnemyBullets()
@@ -199,7 +199,7 @@ window.addEventListener(
 
 
             
-    const canvasRect = gameCanvas.getBoundingClientRect();
+    // const canvasRect = gameCanvas.getBoundingClientRect();
          
             //check status
             console.log(gameState.paused?"Paused":"Resumed");
@@ -261,9 +261,11 @@ function throttle(fn,wait) {
 // show the controls and blur the canvas
 function toggleControl(state) {
     controlEl.classList.toggle('hidden');
-    gameCanvas.classList.toggle('blurred');
-    gameInfo.classList.toggle('blurred');
-    msgEl.classList.toggle('blurred');
+    // gameCanvas.classList.toggle('blurred');
+    // gameInfo.classList.toggle('blurred');
+    // msgEl.classList.toggle('blurred');
+    all.classList.toggle('blurred');
+
 
     switch (state) {
         case 'paused':
@@ -328,6 +330,7 @@ function isColliding(bullet,target) {
 }
 
 function restart() {
+    all.classList.remove('blurred');
     gameState.paused = false;
     gameState.ended = false;
     gameState.time = 0;
@@ -495,7 +498,7 @@ const enemiesBullets= throttle(()=> {
     bullet.style.transform = `translate(${bulletX}px,${bulletY}px)`
 
     gameCanvas.append(bullet)
-    enemyBullets.push({ element: bullet, x: bulletX, y: bulletY })
+    enemyBullets.push({ element: bullet, x: bulletX, y: bulletY, width:8 , height:20 })
 },2000)
 
 function isEnemiesReachedPlayer() {
@@ -511,4 +514,32 @@ function isEnemiesReachedPlayer() {
         return true 
     }
     return false
+}
+
+//===========================collising===================================
+
+function playerRec() {
+    const canvasRect = gameCanvas.getBoundingClientRect();
+    const playerRect = playerEl.getBoundingClientRect();
+    return {
+        x: playerRect.left - canvasRect.left,
+        y: playerRect.top -canvasRect.top,
+        width: playerRect.width,
+        height: playerRect.height
+    }
+}
+
+function collision() {
+    const newPlayerRec = playerRec()
+    enemyBullets.forEach((bullet,i) => {
+        console.log((isColliding(bullet,newPlayerRec)))
+            if (isColliding(bullet,newPlayerRec)) {
+                bullet.element.remove()
+                enemyBullets.splice(i,1)
+                    gameState.lives-- 
+                if (gameState.lives == 0){
+                    toggleControl('lose')
+                }
+            }
+    })
 }
