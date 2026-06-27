@@ -463,6 +463,8 @@ function collision() {
         for (let i = enemies.length - 1 ; i >= 0 ; i-- ) {
             let e = enemies[i]
             if (isColliding(bullet,e)) {
+                explosion(e.x,e.y)
+
                 e.element.remove()
                 bullet.element.remove()   
                 enemies.splice(i, 1)
@@ -492,6 +494,26 @@ function didEnemiesReachPlayer() {
         return true 
     }
     return false
+}
+
+//============================= explosion =================================
+
+function explosion(x,y) {
+    let exIcon = document.createElement('img')
+
+    exIcon.src = 'source/icon-explosion.png'
+    exIcon.className = 'explosion'
+    exIcon.alt = ''
+
+    exIcon.style.left = `${x}px`;
+    exIcon.style.top = `${y}px`;
+
+    gameCanvas.append(exIcon)
+
+    exIcon.addEventListener('animationend',()=> {
+        exIcon.remove()
+    })
+
 }
 
 
