@@ -87,7 +87,7 @@ const shootBullet = throttle(() => {
     bullet.style.top = `${y}px`;
         
     gameCanvas.appendChild(bullet);
-    bullets.push({ element: bullet, y });
+    bullets.push({ element: bullet, y ,x, width:bulletWidth, height: bulletHeight});
 }, 500);
 
 function fireBullet() {
@@ -290,9 +290,7 @@ function toggleControl(state) {
 
 function hideControl() {
     controlEl.classList.add('hidden');
-    gameCanvas.className = '';
-    gameInfo.className = '';
-    msgEl.className = '';
+    all.className = '';
 }
 
 
@@ -330,7 +328,6 @@ function isColliding(bullet,target) {
 }
 
 function restart() {
-    all.classList.remove('blurred');
     livesEl.textContent = '♥ ♥ ♥'
     gameState.paused = false;
     gameState.ended = false;
@@ -567,8 +564,11 @@ function collision() {
             if (isColliding(bullet,e)) {
                 e.element.remove()
                 bullet.element.remove()   
-                enemies.splice(i,1)
-                gameState.score+=20
+                enemies.splice(i, 1)
+                bullets.splice(i, 1)
+                
+                gameState.score += 20
+                updateScore();
                 if (enemies.length <= 0) {
                     toggleControl('win')
                 }
