@@ -129,7 +129,7 @@ function moveEnemyBullets() {
     const canvasRect = gameCanvas.getBoundingClientRect();
     for (let i = enemyBullets.length - 1; i >= 0; i--) {
         const bullet = enemyBullets[i];
-        bullet.y += enemyBulletSpeed;
+        bullet.y += bulletSpeed;
         bullet.element.style.transform = `translate(${bullet.x}px,${bullet.y}px)`;        
 
         if (bullet.y > canvasRect.height-20) {
@@ -373,10 +373,10 @@ const enemy = {
 
 const enemies = [];
 const enemyBullets = [];
-const enemyBulletSpeed = 5;
+// const enemyBulletSpeed = 8;
 
 let direction = 1;
-const speed = 1;
+const speed = 2;
 const dropStep = 20;
 
 function getGameSize() {
