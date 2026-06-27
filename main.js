@@ -331,6 +331,7 @@ function isColliding(bullet,target) {
 
 function restart() {
     all.classList.remove('blurred');
+    livesEl.textContent = '♥ ♥ ♥'
     gameState.paused = false;
     gameState.ended = false;
     gameState.time = 0;
