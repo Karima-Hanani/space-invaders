@@ -558,14 +558,14 @@ function collision() {
             }
     })
 
-    bullets.forEach((bullet,i) => {
+    bullets.forEach((bullet,j) => {
         for (let i = 0 ; i < enemies.length ; i++ ) {
             let e = enemies[i]
             if (isColliding(bullet,e)) {
                 e.element.remove()
                 bullet.element.remove()   
                 enemies.splice(i, 1)
-                bullets.splice(i, 1)
+                bullets.splice(j, 1)
                 
                 gameState.score += 20
                 updateScore();
