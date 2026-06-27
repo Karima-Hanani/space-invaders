@@ -497,6 +497,7 @@ function didEnemiesReachPlayer() {
 
 function restart() {
     livesEl.textContent = '♥ ♥ ♥'
+    scoreEl.textContent = 0
     gameState.paused = false;
     gameState.ended = false;
     gameState.time = 0;
