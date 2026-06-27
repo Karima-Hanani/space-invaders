@@ -36,8 +36,38 @@ const Player = {
     speed: 5,
 }
 
+const enemy = {
+        width: 35,
+        height: 40,
+};
+
+const enemies = [];
+
 const bullets = [];
+const enemyBullets = [];
 const bulletSpeed = 8;
+
+let direction = 1;
+const speed = 2;
+const dropStep = 20;
+
+function getGameSize() {
+    return {
+        height: gameCanvas.clientHeight,
+        width: gameCanvas.clientWidth
+    }
+}
+
+function playerRec() {
+    const canvasRect = gameCanvas.getBoundingClientRect();
+    const playerRect = playerEl.getBoundingClientRect();
+    return {
+        x: playerRect.left - canvasRect.left,
+        y: playerRect.top -canvasRect.top,
+        width: playerRect.width,
+        height: playerRect.height
+    }
+}
 
 let maxX = 0;
 function updateMovementLimits() {
@@ -49,6 +79,20 @@ function updateMovementLimits() {
     // Player.x = (playerRect.x+(playerRect.width/2) - canvasRect.x);
 
     maxX = (canvasRect.width - playerRect.width)/2;
+}
+
+function updateLives() {
+    let hearts = "";
+
+    for (let i = 0; i < 3; i++) {
+        hearts += i < gameState.lives ? "♥ " : "♡ ";
+    }
+
+    livesEl.textContent = hearts.trim();
+}
+
+function updateScore() {
+    scoreEl.textContent = gameState.score
 }
 
 function movePlayer() {
@@ -90,14 +134,27 @@ const shootBullet = throttle(() => {
     bullets.push({ element: bullet, y ,x, width:bulletWidth, height: bulletHeight});
 }, 500);
 
-function fireBullet() {
-    // let count = 0;
-    if (keys.Space) {
-        //TO-DO: throttle bullet firing
-        shootBullet();
-    }
-    moveBullets(bullets,"up");
-}
+const enemiesBullets= throttle(()=> {
+    let aliveEnemies = enemies.filter((e) => e.alive);
+    if (aliveEnemies.length === 0) return
+
+    let index = Math.floor(Math.random() * aliveEnemies.length)
+    let shooter = aliveEnemies[index]
+
+    let bulletX = shooter.x + enemy.width / 2
+    let bulletY = shooter.y + enemy.height 
+
+    const bullet = document.createElement('img');
+    
+    bullet.src = 'source/bullet_down.svg';
+    bullet.alt = '';
+    bullet.className = 'bullet';
+
+    bullet.style.transform = `translate(${bulletX}px,${bulletY}px)`
+
+    gameCanvas.append(bullet)
+    enemyBullets.push({ element: bullet, x: bulletX, y: bulletY, width:8 , height:20 })
+},2000)
 
 function moveBullets(bullets,dir) {
     const canvasRect = gameCanvas.getBoundingClientRect();
@@ -139,36 +196,15 @@ function moveEnemyBullets() {
     }
 }
 
-let lastTime = 0;
-function gameLoop(timestamp) {
-    const dt = timestamp - lastTime;
-    lastTime = timestamp;
-    
-    if (!gameState.paused) {
-        gameState.time += dt / 1000;
-        collision()
-        moveEnemies()
-        if (gameState.paused || gameState.ended) {
-            requestAnimationFrame(gameLoop)
-            return
-        }
-        enemiesBullets()
-        moveEnemyBullets()
-        fireBullet();
-        movePlayer();
-
-        const minutes = 
-            Math.floor(gameState.time / 60)
-        const seconds = 
-            Math.floor(gameState.time % 60)
-    
-        timeEl.textContent =
-            `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+function fireBullet() {
+    // let count = 0;
+    if (keys.Space) {
+        //TO-DO: throttle bullet firing
+        shootBullet();
     }
-
-    requestAnimationFrame(gameLoop)
+    moveBullets(bullets,"up");
 }
-requestAnimationFrame(gameLoop)
+
 
 //resize fix:
 window.addEventListener('resize', updateMovementLimits);
@@ -200,27 +236,13 @@ window.addEventListener(
             console.log("player Rect x : ",playerRect.x);
             console.log("player width : ",playerRect.width);
             console.log("player height : ",playerRect.height);
-
-
-            
-    // const canvasRect = gameCanvas.getBoundingClientRect();
-         
-            //check status
-            console.log(gameState.paused?"Paused":"Resumed");
         }
         //Restart
         if (e.key.toLocaleLowerCase() === 'r') {
             restart();
             hideControl();
         }
-        //================For testing purposes only=================
-        if (e.key.toLocaleLowerCase() === 'w') {
-            toggleControl('win')
-        }
-        if (e.key.toLocaleLowerCase() === 'l') {
-            toggleControl('lose')
-        }
-        //=======================End of Test=========================
+
     }
 );
 
@@ -241,35 +263,18 @@ resumeBtn.addEventListener(
 restartBtn.addEventListener(
     'click',
     () => {
-        // window.location.reload();
         restart();
         hideControl();
     }
 );
 
 
-function throttle(fn,wait) {
-    let shouldWait = false
-    
-    return function () {
-        if (!shouldWait) {
-            fn()
-            shouldWait = true
-            setTimeout(() => {
-                shouldWait=false
-            },wait)
-        }
-    }
-}
+//=======================Controls======================================
 
 // show the controls and blur the canvas
 function toggleControl(state) {
     controlEl.classList.toggle('hidden');
-    // gameCanvas.classList.toggle('blurred');
-    // gameInfo.classList.toggle('blurred');
-    // msgEl.classList.toggle('blurred');
     all.classList.toggle('blurred');
-
 
     switch (state) {
         case 'paused':
@@ -305,9 +310,10 @@ function showMessage(message,state) {
     
     status.innerHTML = `Score: ${gameState.score}<br>
                         Time: ${String(Math
-                            .floor(gameState.time / 60)).padStart(2,"0")}:${String(String(Math
-                                .floor(gameState.time % 60)))
-                                .padStart(2, "0")}`
+                            .floor(gameState.time / 60))
+                            .padStart(2, "0")}:${String(Math
+                            .floor(gameState.time % 60))
+                            .padStart(2, "0")}`
 
     show.textContent = `${message}`
     show.className= state
@@ -320,71 +326,9 @@ function showMessage(message,state) {
     controlEl.appendChild(restartBtn)
 }
 
-//Check for collision
-function isColliding(bullet,target) {
-    
-    return (
-        bullet.x < target.x + target.width &&
-        bullet.x + bullet.width > target.x &&
-        bullet.y < target.y + target.height &&
-        bullet.y + bullet.height > target.y
-    );
-}
-
-function restart() {
-    livesEl.textContent = '♥ ♥ ♥'
-    gameState.paused = false;
-    gameState.ended = false;
-    gameState.time = 0;
-    gameState.lives = 3;
-    gameState.score = 0;
-    playerEl.style.transform = `translateX(-50%)`;
-    Player.x = 0; 
-    //Remove bullets
-    bullets.forEach(b => {
-        b.element.remove();
-    });
-
-    enemyBullets.forEach(eb => {
-        eb.element.remove()
-    })
-    
-    enemies.forEach(e => {
-        e.element.remove()
-    })
-
-    bullets.length = 0
-    enemyBullets.length = 0
-    enemies.length = 0
-
-    createEnemies()
-}
-
 
 
 //================================================================= Enemy ==============================================================
-
-// const gameCanvas = document.getElementById('gameCanvas');
-
-const enemy = {
-        width: 35,
-        height: 40,
-};
-
-const enemies = [];
-const enemyBullets = [];
-// const enemyBulletSpeed = 8;
-
-let direction = 1;
-const speed = 2;
-const dropStep = 20;
-
-function getGameSize() {
-    return {
-        height: gameCanvas.clientHeight,
-        width: gameCanvas.clientWidth
-    }
-}
 
 function createEnemy(x,y) {
     const enemyEl = document.createElement('div');
@@ -457,9 +401,10 @@ function getEnemyLimits() {
 
 
 function moveEnemies() {
-    if (isEnemiesReachedPlayer()) {
+    if (didEnemiesReachPlayer()) {
         toggleControl('lose')
     }
+
     const gameSize = getGameSize();
 
     for (const e of enemies) {
@@ -485,68 +430,17 @@ function moveEnemies() {
 
 createEnemies()
 
-const enemiesBullets= throttle(()=> {
-    let aliveEnemies = enemies.filter((e) => e.alive);
-    if (aliveEnemies.length === 0) return
-
-    let index = Math.floor(Math.random() * aliveEnemies.length)
-    let shooter = aliveEnemies[index]
-
-    let bulletX = shooter.x + enemy.width / 2
-    let bulletY = shooter.y + enemy.height 
-
-    const bullet = document.createElement('img');
-    
-    bullet.src = 'source/bullet_down.svg';
-    bullet.alt = '';
-    bullet.className = 'bullet';
-
-    bullet.style.transform = `translate(${bulletX}px,${bulletY}px)`
-
-    gameCanvas.append(bullet)
-    enemyBullets.push({ element: bullet, x: bulletX, y: bulletY, width:8 , height:20 })
-},2000)
-
-function isEnemiesReachedPlayer() {
-    let enemyY = 0;
-    for (let i = enemies.length -1 ; i >= 0 ; i--) {
-        if (!enemies[i].alive) continue
-        enemyY = enemies[i].y
-        break
-    } 
-    
-    const enemiesBottom = enemyY + enemy.height
-    if (enemiesBottom >= Player.y) {
-        return true 
-    }
-    return false
-}
-
 //===========================collising===================================
 
-function playerRec() {
-    const canvasRect = gameCanvas.getBoundingClientRect();
-    const playerRect = playerEl.getBoundingClientRect();
-    return {
-        x: playerRect.left - canvasRect.left,
-        y: playerRect.top -canvasRect.top,
-        width: playerRect.width,
-        height: playerRect.height
-    }
-}
-
-function updateLives() {
-    let hearts = "";
-
-    for (let i = 0; i < 3; i++) {
-        hearts += i < gameState.lives ? "♥ " : "♡ ";
-    }
-
-    livesEl.textContent = hearts.trim();
-}
-
-function updateScore() {
-    scoreEl.textContent = gameState.score
+//Check for collision
+function isColliding(bullet,target) {
+    
+    return (
+        bullet.x < target.x + target.width &&
+        bullet.x + bullet.width > target.x &&
+        bullet.y < target.y + target.height &&
+        bullet.y + bullet.height > target.y
+    );
 }
 
 function collision() {
@@ -584,3 +478,98 @@ function collision() {
         }
     }
 }
+
+function didEnemiesReachPlayer() {
+    let enemyY = 0;
+    for (let i = enemies.length -1 ; i >= 0 ; i--) {
+        if (!enemies[i].alive) continue
+        enemyY = enemies[i].y
+        break
+    } 
+    
+    const enemiesBottom = enemyY + enemy.height
+    if (enemiesBottom >= Player.y) {
+        return true 
+    }
+    return false
+}
+
+
+function restart() {
+    livesEl.textContent = '♥ ♥ ♥'
+    gameState.paused = false;
+    gameState.ended = false;
+    gameState.time = 0;
+    gameState.lives = 3;
+    gameState.score = 0;
+    playerEl.style.transform = `translateX(-50%)`;
+    Player.x = 0; 
+
+    //Remove bullets
+    bullets.forEach(b => {
+        b.element.remove();
+    });
+
+    enemyBullets.forEach(eb => {
+        eb.element.remove()
+    })
+    
+    enemies.forEach(e => {
+        e.element.remove()
+    })
+
+    bullets.length = 0
+    enemyBullets.length = 0
+    enemies.length = 0
+
+    createEnemies()
+}
+
+
+//Helpers
+function throttle(fn,wait) {
+    let shouldWait = false
+    
+    return function () {
+        if (!shouldWait) {
+            fn()
+            shouldWait = true
+            setTimeout(() => {
+                shouldWait=false
+            },wait)
+        }
+    }
+}
+
+///===================== GAME LOOP ==========================================
+
+let lastTime = 0;
+function gameLoop(timestamp) {
+    const dt = timestamp - lastTime;
+    lastTime = timestamp;
+    
+    if (!gameState.paused) {
+        gameState.time += dt / 1000;
+        collision()
+        moveEnemies()
+        if (gameState.paused || gameState.ended) {
+            requestAnimationFrame(gameLoop)
+            return
+        }
+        enemiesBullets()
+        moveEnemyBullets()
+        fireBullet();
+        movePlayer();
+
+        const minutes = 
+            Math.floor(gameState.time / 60)
+        const seconds = 
+            Math.floor(gameState.time % 60)
+    
+        timeEl.textContent =
+            `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+    }
+
+    requestAnimationFrame(gameLoop)
+}
+requestAnimationFrame(gameLoop)
