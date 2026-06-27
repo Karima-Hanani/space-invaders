@@ -163,7 +163,7 @@ function gameLoop(timestamp) {
             Math.floor(gameState.time % 60)
     
         timeEl.textContent =
-            `${String(minutes)}.${String(seconds).padStart(2,"0")}`;
+            `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
     }
 
     requestAnimationFrame(gameLoop)
@@ -305,7 +305,7 @@ function showMessage(message,state) {
     
     status.innerHTML = `Score: ${gameState.score}<br>
                         Time: ${String(Math
-                            .floor(gameState.time / 60))}.${String(String(Math
+                            .floor(gameState.time / 60)).padStart(2,"0")}:${String(String(Math
                                 .floor(gameState.time % 60)))
                                 .padStart(2, "0")}`
 
