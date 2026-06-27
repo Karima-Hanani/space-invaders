@@ -148,6 +148,10 @@ function gameLoop(timestamp) {
         gameState.time += dt / 1000;
         collision()
         moveEnemies()
+        if (gameState.paused || gameState.ended) {
+            requestAnimationFrame(gameLoop)
+            return
+        }
         enemiesBullets()
         moveEnemyBullets()
         fireBullet();
@@ -483,7 +487,9 @@ createEnemies()
 
 const enemiesBullets= throttle(()=> {
     let aliveEnemies = enemies.filter((e) => e.alive);
-    let index = Math.ceil(Math.random() * (aliveEnemies.length -1))
+    if (aliveEnemies.length === 0) return
+
+    let index = Math.floor(Math.random() * aliveEnemies.length)
     let shooter = aliveEnemies[index]
 
     let bulletX = shooter.x + enemy.width / 2
@@ -540,39 +546,41 @@ function updateLives() {
 }
 
 function updateScore() {
-    scoreEl.textContent = gameState.score + 20
+    scoreEl.textContent = gameState.score
 }
 
 function collision() {
     const newPlayerRec = playerRec()
-    enemyBullets.forEach((bullet,i) => {
-        console.log((isColliding(bullet,newPlayerRec)))
-            if (isColliding(bullet,newPlayerRec)) {
-                bullet.element.remove()
-                enemyBullets.splice(i,1)
-                gameState.lives-- 
-                updateLives()
-                if (gameState.lives == 0){
-                    toggleControl('lose')
-                }
+    for (let i = enemyBullets.length - 1; i >= 0; i--) {
+        const bullet = enemyBullets[i]
+        if (isColliding(bullet,newPlayerRec)) {
+            bullet.element.remove()
+            enemyBullets.splice(i,1)
+            gameState.lives--
+            updateLives()
+            if (gameState.lives == 0){
+                toggleControl('lose')
             }
-    })
+        }
+    }
 
-    bullets.forEach((bullet,j) => {
-        for (let i = 0 ; i < enemies.length ; i++ ) {
+    for (let j = bullets.length - 1; j >= 0; j--) {
+        const bullet = bullets[j]
+        for (let i = enemies.length - 1 ; i >= 0 ; i-- ) {
             let e = enemies[i]
             if (isColliding(bullet,e)) {
                 e.element.remove()
                 bullet.element.remove()   
                 enemies.splice(i, 1)
                 bullets.splice(j, 1)
-                
+
                 gameState.score += 20
                 updateScore();
                 if (enemies.length <= 0) {
                     toggleControl('win')
                 }
+                break
             } 
         }
-    })
+    }
 }
