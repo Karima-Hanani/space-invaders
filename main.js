@@ -160,19 +160,16 @@ function moveBullets(bullets,dir) {
     const canvasRect = gameCanvas.getBoundingClientRect();
     for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i];
+
         switch (dir) {
             case 'up':
                 bullet.y -= bulletSpeed;
-                
                 break;
             case 'down':
-                // console.log(bullet.y);
-                
                 bullet.y += bulletSpeed;
-                
                 break;
-            
         }
+
         bullet.element.style.top = `${bullet.y}px`;        
 
         if (bullet.y < 0) {
@@ -197,9 +194,7 @@ function moveEnemyBullets() {
 }
 
 function fireBullet() {
-    // let count = 0;
     if (keys.Space) {
-        //TO-DO: throttle bullet firing
         shootBullet();
     }
     moveBullets(bullets,"up");
@@ -220,22 +215,10 @@ window.addEventListener(
         if (e.key.toLocaleLowerCase() === 'p' && !gameState.ended) {
             gameState.paused = !gameState.paused;
             toggleControl('paused');
-            console.log("enemies: ",enemies);
-            console.log("player Y: ",Player.y);
-            console.log("player X: ", Player.x);
 
             const canvasRect = gameCanvas.getBoundingClientRect();
             const playerRect = playerEl.getBoundingClientRect();
 
-            
-            console.log("Canvas width : ",canvasRect.width);
-            console.log("Canvas height : ",canvasRect.height);
-            console.log("canvas X : ",canvasRect.x);
-            console.log("canvas Y : ",canvasRect.y);
-            console.log("Player Rect Y : ",playerRect.y);
-            console.log("player Rect x : ",playerRect.x);
-            console.log("player width : ",playerRect.width);
-            console.log("player height : ",playerRect.height);
         }
         //Restart
         if (e.key.toLocaleLowerCase() === 'r') {
@@ -290,7 +273,6 @@ function toggleControl(state) {
             gameState.paused = true 
             showMessage("Game Over 😵",state)
             break;
-        
         default:
             break;
     }
@@ -325,7 +307,6 @@ function showMessage(message,state) {
     }
     controlEl.appendChild(restartBtn)
 }
-
 
 
 //================================================================= Enemy ==============================================================
