@@ -128,7 +128,7 @@ span {
 
 .enemy {
     position: absolute;
-
+    width: 35px;
 }
 
 #msg {
@@ -245,6 +245,10 @@ button:active {
     #player {
         width: 64px;
         bottom: 12px;
+    }
+    .enemy {
+        width: 15px;
+        height: auto;
     }
     .head {
         width: 350px;

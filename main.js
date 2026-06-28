@@ -313,13 +313,68 @@ function moveEnemyBullets() {
     }
 }
 
+// function clampEnemyFormation() {
+//     const limits = getEnemyLimits();
+
+//     let offset = 0;
+
+//     if (limits.minX < 0) {
+//         offset = -limits.minX;
+//     }
+
+//     if (limits.maxX > canvas.width - enemy.width) {
+//         offset = (canvas.width - enemy.width) - limits.maxX;
+//     }
+
+//     if (offset !== 0) {
+//         for (const e of enemies) {
+//             e.x += offset;
+//             e.element.style.transform =
+//                 `translate(${e.x}px, ${e.y}px)`;
+//         }
+//     }
+// }
+
+const MIN_WIDTH = 600;
+const MIN_HEIGHT = 824;
+function checkWindowSize() {
+    refreshCanvasRect();
+
+    const tooSmall =
+        window.innerWidth < MIN_WIDTH ||
+        window.innerHeight < MIN_HEIGHT;
+
+    if (tooSmall) {
+        gameState.paused = true;
+
+        controlEl.classList.remove("hidden");
+        all.classList.add("blurred");
+
+        controlEl.innerHTML = `
+            <span class="paused">
+                Window too small<br><br>
+                Minimum size:<br>
+                ${MIN_WIDTH}px × ${MIN_HEIGHT}px
+            </span>
+        `;
+    } else {
+        // Only resume if the game hasn't ended
+        if (!gameState.ended) {
+            gameState.paused = false;
+            hideControl();
+        }
+    }
+}
+
 
 
 
 //Resize fix:
 window.addEventListener('resize', () => {
     updatePlayerLayout()
-    restart()
+    // restart()
+    // clampEnemyFormation();
+    // checkWindowSize();
 })  ;
 
 //______________________________________________ KEYS ______________________________________
@@ -327,6 +382,12 @@ const keys = {};
 window.addEventListener(
     'keydown',
     e => {
+        if (
+        canvas.width < MIN_WIDTH ||
+        canvas.height < MIN_HEIGHT
+        ) {
+            return;
+        }
         keys[e.code] = true;
         //Pause the game
         if (e.key.toLocaleLowerCase() === 'p' && !gameState.ended) {
@@ -548,6 +609,7 @@ function throttle(fn,wait) {
 //_____________ Init_____________
 updatePlayerLayout();
 createEnemies()
+checkWindowSize();
 
 
 ///===================== GAME LOOP ==========================================
