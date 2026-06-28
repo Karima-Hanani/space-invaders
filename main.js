@@ -154,7 +154,7 @@ const enemiesBullets= throttle(()=> {
 
     gameCanvas.append(bullet)
     enemyBullets.push({ element: bullet, x: bulletX, y: bulletY, width:8 , height:20 })
-},2000)
+},800)
 
 function moveBullets(bullets,dir) {
     const canvasRect = gameCanvas.getBoundingClientRect();
