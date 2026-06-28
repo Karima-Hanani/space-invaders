@@ -318,7 +318,7 @@ function moveEnemyBullets() {
 
 //Resize fix:
 window.addEventListener('resize', () => {
-    // updateMovementLimits()
+    updatePlayerLayout()
     restart()
 })  ;
 
@@ -526,7 +526,6 @@ function restart() {
     bullets.length = 0
     enemyBullets.length = 0
     enemies.length = 0
-
     createEnemies()
 }
 
