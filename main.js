@@ -37,6 +37,16 @@ function updateScore() {
     scoreEl.textContent = gameState.score
 }
 
+function updateTimer() {
+    const minutes = 
+            Math.floor(gameState.time / 60)
+    const seconds = 
+        Math.floor(gameState.time % 60)
+    
+    timeEl.textContent =
+        `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+}
+
 // _____________________________ Canvas __________________________
 
 const canvas = {
@@ -303,7 +313,6 @@ function moveEnemyBullets() {
     }
 }
 
-createEnemies()
 
 
 
@@ -312,7 +321,6 @@ window.addEventListener('resize', () => {
     // updateMovementLimits()
     restart()
 })  ;
-updatePlayerLayout();
 
 //______________________________________________ KEYS ______________________________________
 const keys = {};
@@ -343,7 +351,7 @@ window.addEventListener(
 resumeBtn.addEventListener(
     'click',
     () => {
-        gameState.paused = !gameState.paused
+        gameState.paused = !gameState.paused;
         toggleControl('paused');
     }
 );
@@ -366,15 +374,15 @@ function toggleControl(state) {
 
     switch (state) {
         case 'paused':
-            showMessage("Game Paused ⏸️",state)
+            showMessage("Game Paused ⏸️", state);
             break;
         case 'win':
             gameState.ended =gameState.paused= true
-            showMessage("Congratulations 🥳 ",state)
+            showMessage("Congratulations 🥳 ", state);
             break;
         case 'lose':
             gameState.ended = gameState.paused = true
-            showMessage("Game Over 😵",state)
+            showMessage("Game Over 😵", state);
             break;
         
         default:
@@ -390,26 +398,30 @@ function hideControl() {
 
 
 function showMessage(message,state) {
-    controlEl.innerHTML=``
-    const show = document.createElement("span")
-    const status = document.createElement('p')
+    controlEl.innerHTML = ``;
+    const show = document.createElement("span");
+    const status = document.createElement('p');
+
+    const m = String(Math.floor(gameState.time / 60))
+        .padStart(2, "0");
+    
+    const s = String(Math
+        .floor(gameState.time % 60))
+        .padStart(2, "0");
     
     status.innerHTML = `Score: ${gameState.score}<br>
-                        Time: ${String(Math
-                            .floor(gameState.time / 60))
-                            .padStart(2, "0")}:${String(Math
-                            .floor(gameState.time % 60))
-                            .padStart(2, "0")}`
+                        Time: ${m}:${s}`;
 
-    show.textContent = `${message}`
-    show.className= state
-    controlEl.prepend(show)
+    show.textContent = `${message}`;
+    show.className = state;
+    controlEl.prepend(show);
+
     if (state=='paused') {
-        controlEl.appendChild(resumeBtn)
+        controlEl.appendChild(resumeBtn);
     } else {
-        controlEl.appendChild(status)
+        controlEl.appendChild(status);
     }
-    controlEl.appendChild(restartBtn)
+    controlEl.appendChild(restartBtn);
 }
 
 
@@ -534,6 +546,11 @@ function throttle(fn,wait) {
     }
 }
 
+//_____________ Init_____________
+updatePlayerLayout();
+createEnemies()
+
+
 ///===================== GAME LOOP ==========================================
 
 let lastTime = 0;
@@ -543,20 +560,13 @@ function gameLoop(timestamp) {
     
     if (!gameState.paused) {
         gameState.time += dt / 1000;
+        updateTimer();
         collision()
         moveEnemies()
         enemiesBullets()
         moveEnemyBullets()
         fireBullet();
         movePlayer();
-
-        const minutes = 
-            Math.floor(gameState.time / 60)
-        const seconds = 
-            Math.floor(gameState.time % 60)
-    
-        timeEl.textContent =
-            `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
     }
 
     requestAnimationFrame(gameLoop)
