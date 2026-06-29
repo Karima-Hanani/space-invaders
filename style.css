@@ -240,32 +240,3 @@ button:active {
 .paused{
     color: rgb(250, 223, 70);
 }
-
-@media (max-width: 550px) {
-    #gameCanvas {
-        width: 350px;
-        min-width: 350px;
-        height: 400px;
-        min-height: 400px;
-    } 
-    #player {
-        width: 64px;
-        bottom: 12px;
-    }
-    .head {
-        width: 350px;
-    }
-    .controls {
-        width: min(330px, calc(100vw - 24px));
-        min-height: 190px;
-        padding: 22px;
-        gap: 14px;
-    }
-    .controls > div {
-        font-size: 1.1rem;
-    }
-    button {
-        width: 100%;
-        min-width: 0;
-    }
-}
