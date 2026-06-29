@@ -333,7 +333,6 @@ function checkWindowSize() {
         gameState.paused = true;
 
         controlEl.classList.remove("hidden");
-        // all.classList.add("blurred");
 
         controlEl.innerHTML = `
             <span class="paused">Window too small</span><br><br>
@@ -567,7 +566,6 @@ function explosion(x,y) {
 
 
 function restart() {
-    // checkWindowSize();
     updatePlayerLayout();
     livesEl.textContent = '♥ ♥ ♥';
     scoreEl.textContent = 0;
