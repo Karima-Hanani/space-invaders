@@ -133,22 +133,21 @@ const shootBullet = throttle(() => {
 
 
 
+
 function moveBullets(bullets,dir) {
     const canvasRect = gameCanvas.getBoundingClientRect();
     for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i];
+
         switch (dir) {
             case 'up':
                 bullet.y -= bulletSpeed;
-                
                 break;
             case 'down':
-                
                 bullet.y += bulletSpeed;
-                
                 break;
-            
         }
+
         bullet.element.style.top = `${bullet.y}px`;        
 
         if (bullet.y < 0 ) {
@@ -162,7 +161,6 @@ function moveBullets(bullets,dir) {
 
 function fireBullet() {
     if (keys.Space) {
-        //TO-DO: throttle bullet firing
         shootBullet();
     }
     moveBullets(bullets,"up");
@@ -297,7 +295,7 @@ const enemiesBullets= throttle(()=> {
 
     gameCanvas.append(bullet)
     enemyBullets.push({ element: bullet, x: bulletX, y: bulletY, width:8 , height:20 })
-}, 2000)
+}, 800)
 
 function moveEnemyBullets() {
     const canvasRect = gameCanvas.getBoundingClientRect();
@@ -467,6 +465,8 @@ function collision() {
             let e = enemies[i]
 
             if (isColliding(bullet,e)) {
+                explosion(e.x,e.y)
+
                 e.element.remove()
                 bullet.element.remove()   
                 enemies.splice(i, 1)
@@ -496,6 +496,26 @@ function didEnemiesReachPlayer() {
         return true 
     }
     return false
+}
+
+//============================= explosion =================================
+
+function explosion(x,y) {
+    let exIcon = document.createElement('img')
+
+    exIcon.src = 'source/icon-explosion.png'
+    exIcon.className = 'explosion'
+    exIcon.alt = ''
+
+    exIcon.style.left = `${x}px`;
+    exIcon.style.top = `${y}px`;
+
+    gameCanvas.append(exIcon)
+
+    exIcon.addEventListener('animationend',()=> {
+        exIcon.remove()
+    })
+
 }
 
 
