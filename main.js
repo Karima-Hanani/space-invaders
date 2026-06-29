@@ -83,12 +83,6 @@ function updatePlayerLayout() {
     Player.x= Math.max(0,Math.min(Player.x,canvas.width-Player.width))
 }
 
-
-
-
-
-
-
 function movePlayer() {
     
     if (keys.ArrowLeft) {
@@ -105,6 +99,7 @@ function movePlayer() {
     
 }
 
+//____________ Player's Bullets _______________________
 const bullets = [];
 const bulletSpeed = 8;
 
