@@ -133,22 +133,21 @@ const shootBullet = throttle(() => {
 
 
 
+
 function moveBullets(bullets,dir) {
     const canvasRect = gameCanvas.getBoundingClientRect();
     for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i];
+
         switch (dir) {
             case 'up':
                 bullet.y -= bulletSpeed;
-                
                 break;
             case 'down':
-                
                 bullet.y += bulletSpeed;
-                
                 break;
-            
         }
+
         bullet.element.style.top = `${bullet.y}px`;        
 
         if (bullet.y < 0 ) {
@@ -162,7 +161,6 @@ function moveBullets(bullets,dir) {
 
 function fireBullet() {
     if (keys.Space) {
-        //TO-DO: throttle bullet firing
         shootBullet();
     }
     moveBullets(bullets,"up");
@@ -177,10 +175,17 @@ const enemy = {
 
 const enemies = [];
 const enemyBullets = [];
-
+const width = window.innerWidth
 let direction = 1;
-const speed = 4;
-const dropStep = 60;
+let speed =
+    width < 1300 ? 2 :
+    width > 2070 ? 5 :
+            3;
+    
+let dropStep =
+    width < 1300 ? 20 :
+    width > 2070 ? 60 :
+            40;
 
 
 function createEnemy(x,y) {
@@ -297,7 +302,7 @@ const enemiesBullets= throttle(()=> {
 
     gameCanvas.append(bullet)
     enemyBullets.push({ element: bullet, x: bulletX, y: bulletY, width:8 , height:20 })
-}, 2000)
+}, 800)
 
 function moveEnemyBullets() {
     const canvasRect = gameCanvas.getBoundingClientRect();
@@ -371,6 +376,14 @@ function checkWindowSize() {
 
 //Resize fix:
 window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    
+    speed = Math.max(2, Math.min(5,
+    3 * window.innerWidth / 1600
+    ));
+    dropStep = Math.max(20, Math.min(60,
+    40 * window.innerWidth / 1600
+    ));
     updatePlayerLayout()
     // restart()
     // clampEnemyFormation();
@@ -528,6 +541,8 @@ function collision() {
             let e = enemies[i]
 
             if (isColliding(bullet,e)) {
+                explosion(e.x,e.y)
+
                 e.element.remove()
                 bullet.element.remove()   
                 enemies.splice(i, 1)
@@ -559,8 +574,29 @@ function didEnemiesReachPlayer() {
     return false
 }
 
+//============================= explosion =================================
+
+function explosion(x,y) {
+    let exIcon = document.createElement('img')
+
+    exIcon.src = 'source/icon-explosion.png'
+    exIcon.className = 'explosion'
+    exIcon.alt = ''
+
+    exIcon.style.left = `${x}px`;
+    exIcon.style.top = `${y}px`;
+
+    gameCanvas.append(exIcon)
+
+    exIcon.addEventListener('animationend',()=> {
+        exIcon.remove()
+    })
+
+}
+
 
 function restart() {
+    updatePlayerLayout();
     livesEl.textContent = '♥ ♥ ♥';
     scoreEl.textContent = 0;
     gameState.paused = false;
@@ -588,6 +624,7 @@ function restart() {
     enemyBullets.length = 0
     enemies.length = 0
     createEnemies()
+    hideControl()
 }
 
 
