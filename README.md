@@ -26,12 +26,11 @@ You can open `index.html` directly in your browser
 	- Move left: Arrow Left 
 	- Move right: Arrow Right 
 	- Shoot: Spacebar
-- **Scoring:** Each invader destroyed awards points. Points increase for higher waves or tougher enemies.
-- **Enemy Types:** Basic invaders move in formation.
+- **Scoring:** Each invader destroyed awards points.
 - **Lives & Game Over:** You have a limited number of lives. The game ends when all lives are lost or invaders reach the bottom.
 
 **Tips**
-- Keep moving to avoid clustered fire and prioritize faster enemies first.
+- Keep moving to avoid clustered fire.
 - Use the edges of the screen for temporary cover, but beware of being cornered.
 
 **Known behavior**
