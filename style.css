@@ -242,6 +242,11 @@ button:active {
 .paused{
     color: rgb(250, 223, 70);
 }
+.small{
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 12px rgba(250, 223, 70, 0.42);
+    
+}
 
 @media (max-width: 550px) {
     #gameCanvas {

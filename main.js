@@ -84,11 +84,6 @@ function updatePlayerLayout() {
 }
 
 
-
-
-
-
-
 function movePlayer() {
     
     if (keys.ArrowLeft) {
@@ -353,21 +348,21 @@ function checkWindowSize() {
         gameState.paused = true;
 
         controlEl.classList.remove("hidden");
-        all.classList.add("blurred");
+        // all.classList.add("blurred");
 
         controlEl.innerHTML = `
-            <span class="paused">
-                Window too small<br><br>
+            <span class="paused">Window too small</span><br><br>
+            <span class="small">
                 Minimum size:<br>
                 ${MIN_WIDTH}px × ${MIN_HEIGHT}px
             </span>
         `;
+
+        controlEl.style.width = "100%";
+        controlEl.style.height = "100%";
     } else {
-        // Only resume if the game hasn't ended
-        if (!gameState.ended) {
-            gameState.paused = false;
-            hideControl();
-        }
+        controlEl.style.width = "min(420px, calc(100vw - 32px));";
+        controlEl.style.height = "";
     }
 }
 
@@ -385,9 +380,9 @@ window.addEventListener('resize', () => {
     40 * window.innerWidth / 1600
     ));
     updatePlayerLayout()
-    // restart()
+    restart()
     // clampEnemyFormation();
-    // checkWindowSize();
+    checkWindowSize();
 })  ;
 
 //______________________________________________ KEYS ______________________________________
@@ -596,6 +591,7 @@ function explosion(x,y) {
 
 
 function restart() {
+    checkWindowSize();
     updatePlayerLayout();
     livesEl.textContent = '♥ ♥ ♥';
     scoreEl.textContent = 0;
