@@ -318,7 +318,38 @@ function moveEnemyBullets() {
     }
 }
 
+//__________________ Window size ____________________________
 
+const MIN_WIDTH = 600;
+const MIN_HEIGHT = 824;
+function checkWindowSize() {
+    refreshCanvasRect();
+
+    const tooSmall =
+        window.innerWidth < MIN_WIDTH ||
+        window.innerHeight < MIN_HEIGHT;
+
+    if (tooSmall) {
+        gameState.paused = true;
+
+        controlEl.classList.remove("hidden");
+        // all.classList.add("blurred");
+
+        controlEl.innerHTML = `
+            <span class="paused">Window too small</span><br><br>
+            <span>
+                Minimum size:<br>
+                ${MIN_WIDTH}px × ${MIN_HEIGHT}px
+            </span>
+        `;
+
+        controlEl.style.width = "100%";
+        controlEl.style.height = "100%";
+    } else {
+        controlEl.style.width = "";
+        controlEl.style.height = "";
+    }
+}
 
 
 //Resize fix:
@@ -333,6 +364,7 @@ window.addEventListener('resize', () => {
     ));
     updatePlayerLayout()
     restart()
+    checkWindowSize();
 })  ;
 
 //______________________________________________ KEYS ______________________________________
@@ -535,6 +567,7 @@ function explosion(x,y) {
 
 
 function restart() {
+    // checkWindowSize();
     updatePlayerLayout();
     livesEl.textContent = '♥ ♥ ♥';
     scoreEl.textContent = 0;
@@ -585,6 +618,7 @@ function throttle(fn,wait) {
 //_____________ Init_____________
 updatePlayerLayout();
 createEnemies()
+checkWindowSize();
 
 
 ///===================== GAME LOOP ==========================================
