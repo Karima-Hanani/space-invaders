@@ -175,10 +175,17 @@ const enemy = {
 
 const enemies = [];
 const enemyBullets = [];
-
+const width = window.innerWidth
 let direction = 1;
-const speed = 4;
-const dropStep = 60;
+let speed =
+    width < 1300 ? 2 :
+    width > 2070 ? 5 :
+            3;
+    
+let dropStep =
+    width < 1300 ? 20 :
+    width > 2070 ? 60 :
+            40;
 
 
 function createEnemy(x,y) {
@@ -316,6 +323,14 @@ function moveEnemyBullets() {
 
 //Resize fix:
 window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    
+    speed = Math.max(2, Math.min(5,
+    3 * window.innerWidth / 1600
+    ));
+    dropStep = Math.max(20, Math.min(60,
+    40 * window.innerWidth / 1600
+    ));
     updatePlayerLayout()
     restart()
 })  ;
@@ -520,6 +535,7 @@ function explosion(x,y) {
 
 
 function restart() {
+    updatePlayerLayout();
     livesEl.textContent = '♥ ♥ ♥';
     scoreEl.textContent = 0;
     gameState.paused = false;
@@ -547,6 +563,7 @@ function restart() {
     enemyBullets.length = 0
     enemies.length = 0
     createEnemies()
+    hideControl()
 }
 
 
