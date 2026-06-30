@@ -173,4 +173,5 @@
             </linearGradient>
         </defs>
     </symbol>
+    <use href="#player-ship"></use>
 </svg>
